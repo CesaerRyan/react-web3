@@ -35,3 +35,5 @@ export const navlinks = [
     disabled: true,
   },
 ];
+export * from './config';
+

@@ -1,6 +1,6 @@
 import React from 'react'
 import { Route, Routes } from 'react-router'
-import { CampaignDetails,createCampaign,Home,Profile } from './pages'
+import { CampaignDetails,CreateCampaign,Home,Profile } from './pages'
 import { Navbar, Sidebar } from './components'
 
 
@@ -20,6 +20,9 @@ function App() {
 
       <Routes>
         <Route path='/' element={<Home></Home>}></Route>
+        <Route path='/profile' element={<Profile></Profile>}></Route>
+        <Route path='/create-campaign' element={<CreateCampaign />}></Route>
+        <Route path='/campaign-details/:id' element={<CampaignDetails></CampaignDetails>}></Route>
       </Routes>
     </div>
     </div>

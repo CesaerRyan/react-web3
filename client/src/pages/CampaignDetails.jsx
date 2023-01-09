@@ -5,12 +5,13 @@ import { useStateContext } from '../context'
 import { CustomeButton } from '../components'
 import { calculateBarPercentage, daysLeft } from '../utils'
 import { thirdweb } from '../assets'
+import Loader from '../components/Loader'
 
 const CampaignDetails = () => {
   const { state } = useLocation()
   console.log(state)
 
-  const { getDonation, contract, address } = useStateContext()
+  const { getDonations, donate, contract, address } = useStateContext()
 
   const [isLoading, setIsLoading] = useState(false)
 
@@ -18,11 +19,23 @@ const CampaignDetails = () => {
   const [donators, setDonators] = useState([])
 
   const remainingDays = daysLeft(state.deadline)
-  const handleDonate = async () => {}
+  const fetchDonators = async () => {
+    const data = await getDonations(state.id)
+    setDonators(data)
+  }
+  const handleDonate = async () => {
+    setIsLoading(true)
+    await donate(state.id, amount)
+    setIsLoading(false)
+  }
+
+  useEffect(() => {
+    if (contract) fetchDonators()
+  }, [contract, address])
 
   return (
     <div>
-      {isLoading && 'Loading...'}
+      {isLoading && <Loader></Loader>}
       <div className="w-full flex md:flex-row flex-col mt-10 gap-[30px]">
         <div className="flex-1 flex-col">
           <img
@@ -37,7 +50,7 @@ const CampaignDetails = () => {
                 width: `${calculateBarPercentage(
                   state.target,
                   state.amountCollected
-                )}`,
+                )}%`,
                 maxWidth: `100%`,
               }}
             ></div>
@@ -50,7 +63,7 @@ const CampaignDetails = () => {
             title={`Raised of ${state.target}`}
             value={state.amountCollected}
           ></CountBox>
-          <CountBox title="Total Balance" value={donators.length}></CountBox>
+          <CountBox title="Total Backer" value={donators.length}></CountBox>
         </div>
       </div>
 
@@ -97,7 +110,20 @@ const CampaignDetails = () => {
             </h4>
             <div className="mt-[20px] flex flex-col gap-4">
               {donators.length > 0 ? (
-                donators.map((d) => <div>donator</div>)
+                donators.map((d, index) => (
+                  <div
+                    key={index}
+                    className="flex justify-between items-center gap-4"
+                  >
+                    <p className="font-epilogue font-normal text-[16px] text-[#b2b3bd] leading-[26px]">
+                      {index + 1}. {d.donator}
+                    </p>
+
+                    <p className="font-epilogue font-normal text-[16px] text-[#808191] leading-[26px]">
+                      {d.donation}
+                    </p>
+                  </div>
+                ))
               ) : (
                 <p className=" font-epilogue font-normal text-[16px] leading-[26px] text-[#808191]">
                   没有支持者，成为第一个吧！

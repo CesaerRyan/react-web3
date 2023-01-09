@@ -35,23 +35,28 @@ export const StateContextProvider = ({ children }) => {
       console.error('contract error', error)
     }
   }
-  const getCampaigns = async ()=>{
-    const campaigns = await contract.call('getCampaigns');
+  const getCampaigns = async () => {
+    const campaigns = await contract.call('getCampaigns')
 
-const parsedCampagins = campaigns.map((camp,i)=>(
-  {
-    owner:camp.owner,
-    title:camp.title,
-    description:camp.description,
-    target: ethers.utils.formatEther(camp.target.toString()),
-    deadline: camp.deadline.toNumber(),
-    amountCollected: ethers.utils.formatEther(camp.amountCollected.toString()),
-    image:camp.image,
-    id:i,
+    const parsedCampagins = campaigns.map((camp, i) => ({
+      owner: camp.owner,
+      title: camp.title,
+      description: camp.description,
+      target: ethers.utils.formatEther(camp.target.toString()),
+      deadline: camp.deadline.toNumber(),
+      amountCollected: ethers.utils.formatEther(
+        camp.amountCollected.toString()
+      ),
+      image: camp.image,
+      id: i,
+    }))
+    return parsedCampagins
   }
-))
-return parsedCampagins
 
+  const getUserCampaings = async () => {
+    const allCampaigns = await getCampaigns()
+    const filterC = allCampaigns.filter((camp) => camp.owner === address)
+    return filterC
   }
 
   return (
@@ -61,7 +66,8 @@ return parsedCampagins
         contract,
         connect,
         createCampaign: publishCampaign,
-        getCampaigns
+        getCampaigns,
+        getUserCampaings,
       }}
     >
       {children}
@@ -69,7 +75,4 @@ return parsedCampagins
   )
 }
 
-
-
-export const useStateContext = ()=> useContext(StateContext)
-
+export const useStateContext = () => useContext(StateContext)

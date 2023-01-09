@@ -6,13 +6,11 @@ import { navlinks } from '../constants'
 import { CustomeButton } from '.'
 import { useStateContext } from '../context'
 
-
 const Navbar = () => {
   const navigate = useNavigate()
   const [isActive, setIsActive] = useState('dashboard')
   const [toggleDrawer, setToggleDrawer] = useState(false)
-  const {address,connect} = useStateContext()
-
+  const { address, connect } = useStateContext()
 
   return (
     <div className="flex md:flex-row flex-col-reverse justify-between mb-[35px] gap-6">
